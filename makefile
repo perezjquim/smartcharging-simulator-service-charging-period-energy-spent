@@ -12,7 +12,7 @@ MODEL_NAME=charging_period_peak
 MODEL_PACK_NAME=pack_energysim_model_charging_period_peak
 MODEL_CONTAINER_NAME=cont_energysim_model_charging_period_peak
 MODEL_BACKDOOR=3000
-MODEL_PORTS=8001:8000
+MODEL_PORTS=8002:8000
 
 RABBIT_CONTAINER_NAME=cont_energysim_rabbitmq
 RABBIT_USER=guest
