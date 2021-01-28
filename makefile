@@ -12,7 +12,7 @@ MODEL_NAME=charging_period_peak
 MODEL_PACK_NAME=pack_energysim_model_charging_period_peak
 MODEL_CONTAINER_NAME=cont_energysim_model_charging_period_peak
 MODEL_BACKDOOR=3000
-MODEL_PORTS=8002:8000
+MODEL_PORTS=8004:8000
 
 RABBIT_CONTAINER_NAME=cont_energysim_rabbitmq
 RABBIT_USER=guest
@@ -29,9 +29,12 @@ run-docker-model: stop-docker-model build-docker-model start-docker-model
 build-docker-model:
 	@echo '$(PATTERN_BEGIN) BUILDING `$(MODEL_NAME)` PACK...'
 
-	@pipreqs --savepath requirements.txt.tmp
-	@if cmp -s "requirements.txt.tmp" "requirements.txt"; then rm requirements.txt.tmp; \
-	else mv requirements.txt.tmp requirements.txt; fi
+	@pipreqs --force --savepath requirements.txt.tmp
+	@sort -r requirements.txt.tmp > requirements.txt.tmp.sorted
+	@if cmp -s requirements.txt.tmp.sorted requirements.txt; then :;\
+	else cp -f requirements.txt.tmp.sorted requirements.txt; fi
+	@rm -f requirements.txt.tmp
+	@rm -f requirements.txt.tmp.sorted
 
 	@pack build $(MODEL_PACK_NAME) \
 	--builder $(BUILDPACK_BUILDER) \
