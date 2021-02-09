@@ -64,7 +64,7 @@ start-docker-model:
 stop-docker-model:
 	@echo '$(PATTERN_BEGIN) STOPPING `$(MODEL_NAME)` PACK...'
 
-	@( docker stop $(MODEL_CONTAINER_NAME) && docker rm $(MODEL_CONTAINER_NAME) ) || true
+	@( docker rm -f $(MODEL_CONTAINER_NAME) ) || true
 
 	@echo '$(PATTERN_END) `$(MODEL_NAME)` PACK STOPPED!'	
 # < GATEWAY
