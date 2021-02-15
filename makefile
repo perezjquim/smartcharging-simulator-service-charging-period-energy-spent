@@ -6,10 +6,8 @@ BUILDPACK_BUILDER=heroku/buildpacks:18
 
 SIMULATOR_NETWORK_NAME=net_energysim
 
-MODEL_NAME=charging_period_peak
-
-MODEL_PACK_NAME=pack_energysim_model_charging_period_peak
-MODEL_CONTAINER_NAME=cont_energysim_model_charging_period_peak
+MODEL_PACK_NAME=pack_energysim_model_charging_period_energy_spent
+MODEL_CONTAINER_NAME=cont_energysim_model_charging_period_energy_spent
 MODEL_BACKDOOR=3000
 MODEL_PORTS=8004:8000
 
@@ -26,7 +24,7 @@ main: run-docker-model
 run-docker-model: stop-docker-model build-docker-model start-docker-model
 
 build-docker-model:
-	@echo '$(PATTERN_BEGIN) BUILDING `$(MODEL_NAME)` PACK...'
+	@echo '$(PATTERN_BEGIN) BUILDING `$(MODEL_CONTAINER_NAME)` PACK...'
 
 	@pipreqs --force --savepath requirements.txt.tmp
 	@sed -i 's/tensorflow/tensorflow-cpu/g' requirements.txt.tmp
@@ -41,10 +39,10 @@ build-docker-model:
 	--pull-policy if-not-present \
 	--verbose
 
-	@echo '$(PATTERN_END) `$(MODEL_NAME)` PACK BUILT!'
+	@echo '$(PATTERN_END) `$(MODEL_CONTAINER_NAME)` PACK BUILT!'
 
 start-docker-model:
-	@echo '$(PATTERN_BEGIN) STARTING `$(MODEL_NAME)` PACK...'
+	@echo '$(PATTERN_BEGIN) STARTING `$(MODEL_CONTAINER_NAME)` PACK...'
 
 	@docker run -d \
 	--name $(MODEL_CONTAINER_NAME) \
@@ -57,14 +55,14 @@ start-docker-model:
 	-p $(MODEL_PORTS) \
 	$(MODEL_PACK_NAME)
 	
-	@echo '$(PATTERN_END) `$(MODEL_NAME)` PACK STARTED!'
+	@echo '$(PATTERN_END) `$(MODEL_CONTAINER_NAME)` PACK STARTED!'
 
 stop-docker-model:
-	@echo '$(PATTERN_BEGIN) STOPPING `$(MODEL_NAME)` PACK...'
+	@echo '$(PATTERN_BEGIN) STOPPING `$(MODEL_CONTAINER_NAME)` PACK...'
 
 	@( docker rm -f $(MODEL_CONTAINER_NAME) ) || true
 
-	@echo '$(PATTERN_END) `$(MODEL_NAME)` PACK STOPPED!'	
+	@echo '$(PATTERN_END) `$(MODEL_CONTAINER_NAME)` PACK STOPPED!'	
 # < GATEWAY
 
 # > NAMEKO
