@@ -18,19 +18,20 @@ class ModelService:
 
     @rpc
     def get_energy_spent( self, progress ):
-        charging_period_energy_spent = self.generate_energy_spent( progress )
+        progress_float = float ( progress )
+        charging_period_energy_spent = self.generate_energy_spent( progress_float )
         response = json.dumps( { 'charging_period_energy_spent': charging_period_energy_spent } )
         return response
 
     def generate_energy_spent( self, progress ):
         shape = [ 1,1 ]
-        min_charging_period_ENERGY_SPENT = ModelService.CHARGING_PERIOD_ENERGY_SPENT_AVG - ModelService.CHARGING_PERIOD_ENERGY_SPENT_STDDEV
-        max_charging_period_ENERGY_SPENT = ModelService.CHARGING_PERIOD_ENERGY_SPENT_AVG + ModelService.CHARGING_PERIOD_ENERGY_SPENT_STDDEV
+        min_charging_period_energy_spent = ModelService.CHARGING_PERIOD_ENERGY_SPENT_AVG - ModelService.CHARGING_PERIOD_ENERGY_SPENT_STDDEV
+        max_charging_period_energy_spent = ModelService.CHARGING_PERIOD_ENERGY_SPENT_AVG + ModelService.CHARGING_PERIOD_ENERGY_SPENT_STDDEV
 
         tf_random = tf.random.uniform(
                 shape=shape,
-                minval=min_charging_period_ENERGY_SPENT,
-                maxval=max_charging_period_ENERGY_SPENT,
+                minval=min_charging_period_energy_spent,
+                maxval=max_charging_period_energy_spent,
                 dtype=tf.dtypes.float32,
                 seed=None,
                 name=None
