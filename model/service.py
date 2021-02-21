@@ -9,8 +9,8 @@ import tensorflow as tf
 
 class ModelService:
 
-    CHARGING_PERIOD_ENERGY_SPENT_AVG = 2666.817
-    CHARGING_PERIOD_ENERGY_SPENT_STDDEV = 221.847
+    CHARGING_PERIOD_PEAK_AVG = 2666.817
+    CHARGING_PERIOD_PEAK_STDDEV = 221.847
 
     name = 'model_energysim_charging_period_energy_spent'
 
@@ -25,8 +25,8 @@ class ModelService:
 
     def generate_energy_spent( self, progress ):
         shape = [ 1,1 ]
-        min_charging_period_energy_spent = ModelService.CHARGING_PERIOD_ENERGY_SPENT_AVG - ModelService.CHARGING_PERIOD_ENERGY_SPENT_STDDEV
-        max_charging_period_energy_spent = ModelService.CHARGING_PERIOD_ENERGY_SPENT_AVG + ModelService.CHARGING_PERIOD_ENERGY_SPENT_STDDEV
+        min_charging_period_energy_spent = ModelService.CHARGING_PERIOD_PEAK_AVG - ModelService.CHARGING_PERIOD_PEAK_STDDEV
+        max_charging_period_energy_spent = ModelService.CHARGING_PERIOD_PEAK_AVG + ModelService.CHARGING_PERIOD_PEAK_STDDEV
 
         tf_random = tf.random.uniform(
                 shape=shape,
@@ -45,17 +45,11 @@ class ModelService:
         tf_return = tf_session.run( tf_var )
         charging_period_peak= float( tf_return[ 0 ][ 0 ] )
 
-        # <= 50% carregamento feito
-        # (2 * perc * peak)
-        # ex.: 2 * 0.3 * 2800
-        # ex.: 2 * 0.5 * 2800
-        if progress <= 0.5: 
-            charging_period_energy_spent = ( 2 * progress ) * charging_period_peak
+        eq_a = ( charging_period_peak / -0.25 )
+        eq_b = - eq_a
+        eq_c = 0
 
-        # > 50% carregamento feito
-        # ( 1 - perc ) * peak
-        # ex.: ( 1 - 0.8 ) * 2800
-        else:
-            charging_period_energy_spent = progress * charging_period_peak
+        #parábola: ax2 + bx + c
+        charging_period_energy_spent = ( eq_a * progress * progress ) + ( eq_b * progress ) + eq_c
 
         return charging_period_energy_spent
